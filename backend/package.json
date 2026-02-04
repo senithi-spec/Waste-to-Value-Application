@@ -1,0 +1,25 @@
+{
+    "name": "waste-to-value-backend",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/index.js",
+    "scripts": {
+        "start": "node src/index.js",
+        "dev": "nodemon src/index.js",
+        "migrate": "prisma migrate dev --name init",
+        "seed": "node prisma/seed.js"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "socket.io": "^4.7.0",
+        "jsonwebtoken": "^9.0.0",
+        "bcrypt": "^5.1.0",
+        "dotenv": "^16.3.1",
+        "@prisma/client": "^5.5.0",
+        "cors": "^2.8.5"
+    },
+    "devDependencies": {
+        "prisma": "^5.5.0",
+        "nodemon": "^3.0.1"
+    }
+}

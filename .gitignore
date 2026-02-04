@@ -1,0 +1,13 @@
+# Root .gitignore
+node_modules/
+.env
+.env.local
+.DS_Store
+.vscode
+.idea
+*.swp
+*.swo
+dist/
+build/
+logs/
+*.log

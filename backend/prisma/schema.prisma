@@ -1,0 +1,66 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  role      String     // generator, collector, recycler, admin
+  approved  Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  wasteListings  WasteListing[]
+  sentRequests   WasteRequest[] @relation("sender")
+  receivedRequests WasteRequest[] @relation("receiver")
+}
+
+model WasteListing {
+  id          String   @id @default(cuid())
+  wasteType   String
+  quantity    Float
+  unit        String   // kg, ton, pcs
+  location    String
+  description String?
+  status      String   @default("available") // available, requested, collected
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId   String
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requests WasteRequest[]
+}
+
+model WasteRequest {
+  id        String   @id @default(cuid())
+  status    String   @default("pending") // pending, approved, rejected, completed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listingId String
+  listing   WasteListing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  
+  senderId   String
+  sender     User   @relation("sender", fields: [senderId], references: [id], onDelete: Cascade)
+  
+  receiverId String
+  receiver   User   @relation("receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  type      String   // request, approval, completion
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    String
+}

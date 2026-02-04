@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: waste-to-value-backend
+    ports:
+      - "5000:5000"
+    environment:
+      DATABASE_URL: "file:./prisma/dev.db"
+      JWT_SECRET: "your-secret-key-change-in-production"
+      FRONTEND_URL: "http://localhost:5173"
+      NODE_ENV: "development"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+    depends_on:
+      - frontend
+    networks:
+      - waste-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: waste-to-value-frontend
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_URL: "http://localhost:5000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - waste-network
+
+networks:
+  waste-network:
+    driver: bridge
